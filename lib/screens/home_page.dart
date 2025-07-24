@@ -3,6 +3,7 @@ import 'package:meditation_app/modes/item_model.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dart:ui';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -57,7 +58,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: const Color.fromARGB(255, 112, 111, 111),
       body: SafeArea(
         child: ListView.builder(
           itemCount: items.length,
@@ -80,36 +81,19 @@ class _HomePageState extends State<HomePage> {
                     icon: playingIndex == index
                         ? FaIcon(FontAwesomeIcons.stop, color: Colors.white)
                         : FaIcon(FontAwesomeIcons.play, color: Colors.white),
-                    onPressed: () async {
+                    onPressed: () {
                       if (playingIndex == index) {
                         setState(() {
                           playingIndex = null;
                         });
                         audioPlayer.stop();
                       } else {
-                        try {
-                          await audioPlayer
-                              .setAsset(items[index].auidioPath)
-                              .catchError((onError) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    backgroundColor: Colors.red.withOpacity(
-                                      0.5,
-                                    ),
-                                    content: Text(
-                                      'Oops, an error has ocurred...',
-                                    ),
-                                  ),
-                                );
-                              });
-                          audioPlayer.play();
+                        audioPlayer.setAsset(items[index].auidioPath);
+                        audioPlayer.play();
 
-                          setState(() {
-                            playingIndex = index;
-                          });
-                        } catch (error) {
-                          print(error);
-                        }
+                        setState(() {
+                          playingIndex = index;
+                        });
                       }
                     },
                   ),
